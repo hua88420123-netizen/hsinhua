@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hsinhua Liu — Marketing & Operations</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Syne:wght@400;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --border: #1e1e1e;
+  --text: #e8e4dc;
+  --muted: #555;
+  --accent: #d4e84a;
+  --white: #f5f2ec;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CURSOR */
+.cursor {
+  position: fixed; width: 10px; height: 10px;
+  background: var(--accent); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid rgba(212,232,74,0.4); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.4rem 3rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+}
+.nav-id {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted);
+}
+.nav-id span { color: var(--accent); }
+.nav-links { display: flex; gap: 2.5rem; align-items: center; }
+.nav-links a {
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; color: var(--muted);
+  transition: color 0.2s; font-weight: 700;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); display: inline-block;
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  padding: 120px 3rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.5;
+}
+.hero-glow {
+  position: absolute; top: -200px; right: -200px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,232,74,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-tag {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 2rem;
+  display: flex; align-items: center; gap: 0.8rem;
+  animation: fadeUp 0.6s ease both 0.1s; opacity: 0;
+}
+.hero-tag::before { content: ''; width: 32px; height: 1px; background: var(--accent); }
+.hero-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(5rem, 12vw, 13rem);
+  font-weight: 600; line-height: 0.88;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.6s ease both 0.2s; opacity: 0;
+}
+.hero-name .line2 {
+  font-style: italic; font-weight: 300;
+  color: var(--accent); display: block;
+}
+.hero-bottom {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4rem; align-items: end;
+  margin-top: 3rem;
+  animation: fadeUp 0.6s ease both 0.35s; opacity: 0;
+}
+.hero-desc {
+  font-size: 0.9rem; line-height: 1.85; color: var(--muted);
+  border-left: 1px solid var(--border); padding-left: 1.5rem;
+}
+.hero-desc strong { color: var(--text); font-weight: 700; }
+.hero-right-panel {
+  display: flex; flex-direction: column;
+  align-items: flex-end; gap: 1.5rem;
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 1rem;
+  background: var(--accent); color: var(--bg);
+  text-decoration: none; font-size: 0.72rem;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  font-weight: 700; padding: 1rem 2rem;
+  transition: background 0.2s, transform 0.2s;
+}
+.hero-cta:hover { background: var(--white); transform: translateX(4px); }
+.pill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: flex-end; }
+.pill {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid var(--border); padding: 0.25rem 0.65rem;
+  color: var(--muted);
+}
+
+/* TICKER */
+.ticker-wrap {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden; padding: 0.75rem 0;
+  background: var(--surface);
+}
+.ticker { display: flex; width: max-content; animation: ticker 28s linear infinite; }
+.ticker-inner {
+  display: flex; gap: 3rem; align-items: center;
+  padding-right: 3rem; white-space: nowrap;
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted);
+}
+.ticker-inner .ta { color: var(--accent); }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* NUMBERS */
+.numbers-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--border);
+}
+.num-block {
+  padding: 3rem 2rem;
+  border-right: 1px solid var(--border);
+  position: relative; overflow: hidden;
+  transition: background 0.3s;
+}
+.num-block:last-child { border-right: none; }
+.num-block:hover { background: var(--surface); }
+.num-block::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s;
+}
+.num-block:hover::before { transform: scaleX(1); }
+.num-big {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4.5rem; font-weight: 600; line-height: 1;
+  color: var(--text); margin-bottom: 0.5rem;
+}
+.num-big .u { color: var(--accent); }
+.num-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.4rem;
+}
+.num-desc { font-size: 0.78rem; color: #555; line-height: 1.5; }
+
+/* SECTIONS */
+.sec { padding: 6rem 3rem; border-bottom: 1px solid var(--border); }
+.sec-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 3rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ABOUT */
+.about-layout { display: grid; grid-template-columns: 1fr 400px; gap: 5rem; align-items: start; }
+.about-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 600; line-height: 1.1; margin-bottom: 2rem;
+}
+.about-headline em { font-style: italic; font-weight: 300; color: var(--muted); }
+.about-body { font-size: 0.88rem; line-height: 1.9; color: #888; }
+.about-body p + p { margin-top: 1rem; }
+.about-body strong { color: var(--text); font-weight: 700; }
+.info-stack { display: flex; flex-direction: column; gap: 1px; }
+.info-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 1rem 1.2rem;
+  background: var(--surface); border: 1px solid var(--border);
+  font-size: 0.8rem; transition: border-color 0.2s;
+}
+.info-row:hover { border-color: var(--accent); }
+.info-key {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted);
+}
+.info-val { color: var(--text); text-align: right; font-size: 0.78rem; line-height: 1.45; }
+
+/* EXPERIENCE */
+.exp-list { display: flex; flex-direction: column; gap: 1px; }
+.exp-item {
+  display: grid; grid-template-columns: 220px 1fr;
+  background: var(--surface); border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+.exp-item:hover { border-color: var(--accent); }
+.exp-left {
+  padding: 2.5rem 2rem;
+  border-right: 1px solid var(--border);
+}
+.exp-period {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 0.6rem;
+}
+.exp-company {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 600; line-height: 1.2; margin-bottom: 0.3rem;
+}
+.exp-type { font-size: 0.72rem; color: var(--muted); }
+.exp-right { padding: 2.5rem; }
+.exp-role { font-size: 1rem; font-weight: 700; margin-bottom: 1.2rem; color: var(--text); }
+.exp-points { list-style: none; }
+.exp-points li {
+  font-size: 0.82rem; line-height: 1.65; color: #777;
+  display: flex; gap: 0.8rem; margin-bottom: 0.5rem;
+}
+.exp-points li::before { content: '›'; color: var(--accent); flex-shrink: 0; font-size: 1rem; }
+
+/* CASE */
+.case-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  display: grid; grid-template-columns: 1fr 1.6fr;
+}
+.case-left {
+  padding: 3rem; border-right: 1px solid var(--border);
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 10px,
+    rgba(212,232,74,0.015) 10px, rgba(212,232,74,0.015) 11px
+  );
+}
+.case-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 8rem; font-weight: 600; color: var(--border); line-height: 1; margin-bottom: 1rem;
+}
+.case-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 600; line-height: 1.2; margin-bottom: 1rem;
+}
+.case-title em { font-style: italic; color: var(--accent); }
+.case-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 2rem; }
+.case-result-nums { display: flex; gap: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.crn-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 600; color: var(--accent); line-height: 1;
+}
+.crn-label {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-top: 0.2rem;
+}
+.case-right { padding: 3rem; }
+.case-block { margin-bottom: 2.5rem; }
+.case-block:last-child { margin-bottom: 0; }
+.case-block-h {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 0.7rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.case-block-h::before { content: ''; width: 16px; height: 1px; background: var(--accent); }
+.case-block-body { font-size: 0.85rem; line-height: 1.8; color: #777; }
+
+/* SKILLS */
+.skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+.skill-block { background: var(--bg); padding: 2.5rem 2rem; transition: background 0.2s; }
+.skill-block:hover { background: var(--surface); }
+.skill-cat {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.7rem;
+}
+.skill-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600; margin-bottom: 0.7rem;
+}
+.skill-items { font-size: 0.78rem; color: #666; line-height: 1.7; }
+
+/* CONTACT */
+.contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.contact-big {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 6vw, 6rem); font-weight: 600; line-height: 0.95; margin-bottom: 1.5rem;
+}
+.contact-big em { font-style: italic; font-weight: 300; color: var(--accent); }
+.contact-sub { font-size: 0.85rem; color: var(--muted); line-height: 1.75; }
+.contact-links { display: flex; flex-direction: column; gap: 1px; }
+.c-link {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 1.5rem;
+  background: var(--surface); border: 1px solid var(--border);
+  text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s;
+}
+.c-link:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.c-link:hover .c-plat { color: var(--bg); }
+.c-plat {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); transition: color 0.2s;
+}
+
+footer {
+  padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border);
+}
+footer p {
+  font-family: 'Syne Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+footer .fa { color: var(--accent); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links a { font-size: 0.65rem; }
+  .hero { padding: 100px 1.5rem 3rem; }
+  .hero-bottom { grid-template-columns: 1fr; gap: 2rem; }
+  .hero-right-panel { align-items: flex-start; }
+  .pill-row { justify-content: flex-start; }
+  .about-layout { grid-template-columns: 1fr; }
+  .numbers-strip { grid-template-columns: 1fr 1fr; }
+  .num-block { border-bottom: 1px solid var(--border); }
+  .num-block:nth-child(2) { border-right: none; }
+  .exp-item { grid-template-columns: 1fr; }
+  .exp-left { border-right: none; border-bottom: 1px solid var(--border); }
+  .case-wrap { grid-template-columns: 1fr; }
+  .case-left { border-right: none; border-bottom: 1px solid var(--border); }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  .contact-layout { grid-template-columns: 1fr; }
+  .sec { padding: 4rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<nav>
+  <div class="nav-id">HL <span>·</span> Portfolio</div>
+  <div class="nav-links">
+    <span class="nav-dot"></span>
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#case">Case</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Marketing & Operations · Taipei, Taiwan</div>
+    <h1 class="hero-name">
+      Hsinhua<br>
+      <span class="line2">Liu.</span>
+    </h1>
+    <div class="hero-bottom">
+      <p class="hero-desc">
+        <strong>Product marketing and account operations specialist</strong> with 4+ years in B2B tech — from MarTech SaaS to global hardware. I build content that converts, processes that scale, and client relationships that stick across APAC and North America.
+      </p>
+      <div class="hero-right-panel">
+        <a href="#contact" class="hero-cta">Let's connect →</a>
+        <div class="pill-row">
+          <span class="pill">Go-to-Market</span>
+          <span class="pill">Account Ops</span>
+          <span class="pill">Content Strategy</span>
+          <span class="pill">APAC ↔ NA</span>
+          <span class="pill">EN · 中文</span>
+          <span class="pill">TOEIC 960</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>Product Marketing</span><span class="ta">✦</span>
+      <span>Account Management</span><span class="ta">✦</span>
+      <span>Go-to-Market Strategy</span><span class="ta">✦</span>
+      <span>Content Marketing</span><span class="ta">✦</span>
+      <span>Cross-functional Operations</span><span class="ta">✦</span>
+      <span>B2B SaaS</span><span class="ta">✦</span>
+      <span>Sales Enablement</span><span class="ta">✦</span>
+      <span>APAC · North America</span><span class="ta">✦</span>
+      <span>CRM · Analytics</span><span class="ta">✦</span>
+      <span>Bilingual English · Mandarin</span><span class="ta">✦</span>
+    </div>
+    <div class="ticker-inner" aria-hidden="true">
+      <span>Product Marketing</span><span class="ta">✦</span>
+      <span>Account Management</span><span class="ta">✦</span>
+      <span>Go-to-Market Strategy</span><span class="ta">✦</span>
+      <span>Content Marketing</span><span class="ta">✦</span>
+      <span>Cross-functional Operations</span><span class="ta">✦</span>
+      <span>B2B SaaS</span><span class="ta">✦</span>
+      <span>Sales Enablement</span><span class="ta">✦</span>
+      <span>APAC · North America</span><span class="ta">✦</span>
+      <span>CRM · Analytics</span><span class="ta">✦</span>
+      <span>Bilingual English · Mandarin</span><span class="ta">✦</span>
+    </div>
+  </div>
+</div>
+
+<!-- NUMBERS -->
+<div class="numbers-strip reveal">
+  <div class="num-block">
+    <div class="num-label">Client Retention</div>
+    <div class="num-big">100<span class="u">%</span></div>
+    <div class="num-desc">Zero churn across SaaS portfolio over two years</div>
+  </div>
+  <div class="num-block">
+    <div class="num-label">CSAT</div>
+    <div class="num-big">90<span class="u">%</span></div>
+    <div class="num-desc">Customer satisfaction sustained through proactive communication</div>
+  </div>
+  <div class="num-block">
+    <div class="num-label">Timeline Reduction</div>
+    <div class="num-big">30<span class="u">%</span></div>
+    <div class="num-desc">Cross-functional process redesign cutting launch cycles</div>
+  </div>
+  <div class="num-block">
+    <div class="num-label">Experience</div>
+    <div class="num-big">4<span class="u">+</span></div>
+    <div class="num-desc">Years across MarTech SaaS and global hardware marketing</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="sec reveal" id="about">
+  <div class="sec-label">01 — About Me</div>
+  <div class="about-layout">
+    <div>
+      <h2 class="about-headline">
+        I make things<br>
+        <em>move faster</em><br>
+        and land better.
+      </h2>
+      <div class="about-body">
+        <p>My career spans two complementary worlds: <strong>customer-facing account management</strong> in MarTech SaaS, and <strong>product marketing</strong> for a global hardware company. In both, the through-line has been the same — I find where things break down and fix them.</p>
+        <p>At Ematic, that meant owning accounts end-to-end with zero churn and 90% CSAT. At VIVOTEK, it meant mapping a broken product launch process and rebuilding it so that cross-functional timelines shrank by 30% and the model became the company default.</p>
+        <p>I'm comfortable being the bridge between <strong>technical teams and business stakeholders</strong>, between <strong>Taiwan HQ and North America</strong>, and between a product's feature list and a customer's actual problem.</p>
+      </div>
+    </div>
+    <div class="info-stack">
+      <div class="info-row">
+        <span class="info-key">Based</span>
+        <span class="info-val">Taipei, Taiwan · Open to relocation</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Languages</span>
+        <span class="info-val">Native Mandarin · Fluent English (TOEIC 960)</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">International</span>
+        <span class="info-val">UK exchange (Univ. of Birmingham)<br>Daily APAC · NA · EU collaboration</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Certifications</span>
+        <span class="info-val">Google Data Analytics Certificate</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Currently Studying</span>
+        <span class="info-val">SQL · Looker · Lean Methodology</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Tools</span>
+        <span class="info-val">Advanced Excel · CRM Systems · A/B Testing · Canva</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">Availability</span>
+        <span class="info-val">Immediately available</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="sec reveal" id="experience">
+  <div class="sec-label">02 — Experience</div>
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-left">
+        <div class="exp-period">2023 — Present</div>
+        <div class="exp-company">VIVOTEK /<br>Delta Group</div>
+        <div class="exp-type">Global Surveillance · Hardware Tech</div>
+      </div>
+      <div class="exp-right">
+        <div class="exp-role">Product Marketing Manager</div>
+        <ul class="exp-points">
+          <li>Strategic partner to Sales, PM, and R&D — daily cross-timezone collaboration with NA and APAC teams</li>
+          <li>Built full content marketing engine: gated eBooks, landing pages, LinkedIn series, newsletters, sales decks</li>
+          <li>Led industry vertical campaigns across retail security, property management, and AI/hybrid cloud surveillance</li>
+          <li>Redesigned cross-functional launch process, cutting average project timelines by 30%</li>
+          <li>Owned messaging and positioning end-to-end: from product brief to published campaign</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-left">
+        <div class="exp-period">Dec 2021 — Nov 2023</div>
+        <div class="exp-company">Ematic<br>Solutions</div>
+        <div class="exp-type">MarTech / SaaS Agency</div>
+      </div>
+      <div class="exp-right">
+        <div class="exp-role">Account Manager</div>
+        <ul class="exp-points">
+          <li>End-to-end account ownership for brand and enterprise clients: onboarding, escalations, renewals, expansions</li>
+          <li>100% client retention across portfolio over two years — zero churn through proactive communication</li>
+          <li>Delivered QBRs, managed CRM dashboards, coordinated cross-functional delivery workflows</li>
+          <li>Drove revenue growth through expansion conversions and consultative selling</li>
+          <li>Maintained 90% CSAT through structured, transparent client communication</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY -->
+<section class="sec reveal" id="case">
+  <div class="sec-label">03 — Case Study</div>
+  <div class="case-wrap">
+    <div class="case-left">
+      <div class="case-num">01</div>
+      <h3 class="case-title">Cutting <em>30%</em> off cross-functional project timelines</h3>
+      <div class="case-tags">
+        <span class="pill">Process Design</span>
+        <span class="pill">Cross-functional</span>
+        <span class="pill">Operations</span>
+        <span class="pill">GTM</span>
+      </div>
+      <div class="case-result-nums">
+        <div class="crn">
+          <div class="crn-num">30%</div>
+          <div class="crn-label">Cycle time<br>reduction</div>
+        </div>
+        <div class="crn">
+          <div class="crn-num">↓</div>
+          <div class="crn-label">Scope cuts<br>at launch</div>
+        </div>
+        <div class="crn">
+          <div class="crn-num">✓</div>
+          <div class="crn-label">Adopted as<br>default model</div>
+        </div>
+      </div>
+    </div>
+    <div class="case-right">
+      <div class="case-block">
+        <div class="case-block-h">Situation</div>
+        <div class="case-block-body">Product launches required tight handoffs across hardware engineering, firmware, manufacturing, channel operations, and marketing. The average cycle was running long — creating revenue commitment risk. Late-arriving spec sheets, ambiguous ownership at each gate, and slow cross-team readiness signals were the main friction points.</div>
+      </div>
+      <div class="case-block">
+        <div class="case-block-h">Action</div>
+        <div class="case-block-body">Mapped the full process end-to-end and identified three root friction points. Redesigned the handoff model with a single shared status dashboard, clear ownership definitions per gate, and structured pre-briefs to surface blockers earlier in the cycle. Drove adoption across five functions simultaneously.</div>
+      </div>
+      <div class="case-block">
+        <div class="case-block-h">Result</div>
+        <div class="case-block-body">Average cycle time shrank by 30%. Quality improved — fewer last-minute scope cuts at launch. The redesigned model was adopted as the company default for all subsequent product launches, signaling full stakeholder buy-in.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="sec reveal" id="skills">
+  <div class="sec-label">04 — Skills</div>
+  <div class="skills-grid">
+    <div class="skill-block">
+      <div class="skill-cat">Strategy</div>
+      <div class="skill-name">Go-to-Market & Positioning</div>
+      <div class="skill-items">Campaign strategy · Launch planning · Competitive positioning · Vertical messaging · Value proposition development</div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-cat">Content</div>
+      <div class="skill-name">Content Marketing</div>
+      <div class="skill-items">eBooks · Blog series · LinkedIn thought leadership · Newsletters · Landing page copy · Email nurture sequences</div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-cat">Enablement</div>
+      <div class="skill-name">Sales Enablement</div>
+      <div class="skill-items">Sales decks · One-pagers · Solution briefs · Product presentations · Industry reports</div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-cat">Operations</div>
+      <div class="skill-name">Account & Project Ops</div>
+      <div class="skill-items">QBR delivery · CRM lifecycle design · Escalation management · Renewal & expansion · Cross-functional coordination</div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-cat">Analytics</div>
+      <div class="skill-name">Data & Measurement</div>
+      <div class="skill-items">Google Analytics · Advanced Excel · A/B testing · CRM dashboards · Looker (learning) · SQL (studying)</div>
+    </div>
+    <div class="skill-block">
+      <div class="skill-cat">Communication</div>
+      <div class="skill-name">Bilingual & Cross-cultural</div>
+      <div class="skill-items">Native Mandarin · Fluent English (TOEIC 960) · APAC ↔ NA coordination · UK exchange · Multi-timezone ops</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec reveal" id="contact">
+  <div class="sec-label">05 — Contact</div>
+  <div class="contact-layout">
+    <div>
+      <h2 class="contact-big">Let's<br><em>work</em><br>together.</h2>
+      <p class="contact-sub">Open to product marketing, brand marketing, content strategy, and account management roles at multinational companies. Based in Taipei — comfortable with APAC, global, and remote setups. Immediately available.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:hua88420123@gmail.com" class="c-link">
+        <span>hua88420123@gmail.com</span>
+        <span class="c-plat">Email →</span>
+      </a>
+      <a href="https://www.linkedin.com/in/hsin-hua-liu-771869219/" target="_blank" class="c-link">
+        <span>linkedin.com/in/hsin-hua-liu-771869219</span>
+        <span class="c-plat">LinkedIn →</span>
+      </a>
+      <div class="c-link" style="cursor:default;pointer-events:none">
+        <span>Taipei, Taiwan · Open to relocation</span>
+        <span class="c-plat">Location</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <span class="fa">Hsinhua Liu</span></p>
+  <p>Marketing · Operations · <span class="fa">Open to work</span></p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  });
+  (function animRing() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.width='20px'; cursor.style.height='20px'; ring.style.width='52px'; ring.style.height='52px'; });
+    el.addEventListener('mouseleave', () => { cursor.style.width='10px'; cursor.style.height='10px'; ring.style.width='36px'; ring.style.height='36px'; });
+  });
+
+  // Scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
